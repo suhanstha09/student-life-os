@@ -15,6 +15,7 @@ const navItems = [
   { to: "/notes", icon: Brain, label: "Second Brain" },
   { to: "/learning", icon: BookOpen, label: "Learning Log" },
   { to: "/analytics", icon: BarChart3, label: "Analytics" },
+  { to: "/profile", icon: BookOpen, label: "Profile" },
 ];
 
 const AppSidebar = () => {
