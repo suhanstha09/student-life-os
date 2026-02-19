@@ -14,6 +14,7 @@ import Learning from "./pages/Learning";
 import Analytics from "./pages/Analytics";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/learning" element={<Learning />} />
                 <Route path="/analytics" element={<Analytics />} />
+                <Route path="/profile" element={<Profile />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
