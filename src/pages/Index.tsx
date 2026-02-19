@@ -3,6 +3,7 @@ import { Timer, ClipboardList, Brain, Flame, BookOpen, Plus, ArrowRight, CheckCi
 import { Link } from "react-router-dom";
 import StatCard from "@/components/StatCard";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
@@ -15,9 +16,23 @@ const priorityColor: Record<string, string> = {
 };
 
 const Index = () => {
+
+  const { user } = useAuth();
   const today = new Date();
   const greeting = today.getHours() < 12 ? "Good morning" : today.getHours() < 17 ? "Good afternoon" : "Good evening";
   const todayStr = today.toISOString().split("T")[0];
+
+  // Fetch display_name from profiles
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+      if (error) return null;
+      return data;
+    },
+  });
 
   const { data: assignments = [] } = useQuery({
     queryKey: ["assignments"],
@@ -56,7 +71,10 @@ const Index = () => {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
       <motion.div variants={item} className="space-y-1">
-        <h1 className="text-3xl font-display font-bold text-foreground">{greeting} 👋</h1>
+        <h1 className="text-3xl font-display font-bold text-foreground">
+          {greeting}
+          {profile?.display_name ? `, ${profile.display_name}` : user?.email ? `, ${user.email}` : ""} 👋
+        </h1>
         <p className="text-muted-foreground">Here's your productivity overview for today.</p>
       </motion.div>
 
