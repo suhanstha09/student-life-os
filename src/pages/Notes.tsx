@@ -115,11 +115,19 @@ const Notes = () => {
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[120px]" />
               <input placeholder="Tags (comma-separated)" value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-              <input type="file" accept="image/*,application/pdf" multiple onChange={e => setFiles(e.target.files)}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm" />
-              {files && files.length > 0 && (
-                <div className="text-xs text-muted-foreground">{Array.from(files).map(f => f.name).join(", ")}</div>
-              )}
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Attachments (optional)</label>
+                <input
+                  type="file"
+                  accept="image/*,application/pdf"
+                  multiple
+                  onChange={e => setFiles(e.target.files)}
+                  className="block w-full text-sm text-foreground file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-primary-foreground file:font-medium file:cursor-pointer bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+                {files && files.length > 0 && (
+                  <div className="mt-1 text-xs text-muted-foreground">{Array.from(files).map(f => f.name).join(", ")}</div>
+                )}
+              </div>
               <button type="submit" disabled={addMutation.isPending}
                 className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50">
                 {addMutation.isPending ? "Creating..." : "Create Note"}
