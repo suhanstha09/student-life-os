@@ -18,6 +18,13 @@ build/
 # Environment variables
 .env
 .env.*
+!.env.example
+# Common environment files
+.env.local
+.env.development
+.env.production
+.env.test
+!.env.example
 
 # Vite cache
 .vite/
