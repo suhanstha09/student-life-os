@@ -26,6 +26,7 @@ const Notes = () => {
   const [selectedNote, setSelectedNote] = useState<any | null>(null);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ title: "", content: "", tags: "", color: colorOptions[0] });
+  const [files, setFiles] = useState<FileList | null>(null);
 
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ["notes"],
@@ -39,18 +40,26 @@ const Notes = () => {
   const addMutation = useMutation({
     mutationFn: async () => {
       const tags = form.tags.split(",").map(t => t.trim()).filter(Boolean);
+      let attachments: string[] = [];
+      // Upload files to Supabase Storage (to be implemented next)
+      if (files && files.length > 0) {
+        // Placeholder: just use file names for now
+        attachments = Array.from(files).map(f => f.name);
+      }
       const { error } = await supabase.from("notes").insert({
         user_id: user!.id,
         title: form.title,
         content: form.content,
         tags,
         color: form.color,
+        attachments,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       setForm({ title: "", content: "", tags: "", color: colorOptions[0] });
+      setFiles(null);
       setOpen(false);
       toast({ title: "Note created!" });
     },
@@ -100,6 +109,11 @@ const Notes = () => {
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[120px]" />
               <input placeholder="Tags (comma-separated)" value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+              <input type="file" accept="image/*,application/pdf" multiple onChange={e => setFiles(e.target.files)}
+                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm" />
+              {files && files.length > 0 && (
+                <div className="text-xs text-muted-foreground">{Array.from(files).map(f => f.name).join(", ")}</div>
+              )}
               <button type="submit" disabled={addMutation.isPending}
                 className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50">
                 {addMutation.isPending ? "Creating..." : "Create Note"}
