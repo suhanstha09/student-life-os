@@ -200,6 +200,24 @@ const Notes = () => {
                 ))}
               </div>
               <p className="text-muted-foreground leading-relaxed">{selectedNote.content}</p>
+              {selectedNote.attachments && selectedNote.attachments.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <div className="font-medium text-foreground mb-1">Attachments:</div>
+                  {selectedNote.attachments.map((url: string, i: number) => (
+                    <div key={i} className="flex items-center gap-2">
+                      {url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                        <img src={url} alt="attachment" className="w-24 h-24 object-cover rounded border" />
+                      ) : url.match(/\.pdf$/i) ? (
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary underline flex items-center gap-1">
+                          <FileText className="w-4 h-4" /> PDF File
+                        </a>
+                      ) : (
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary underline">Download</a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
