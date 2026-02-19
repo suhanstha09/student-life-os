@@ -41,10 +41,16 @@ const Notes = () => {
     mutationFn: async () => {
       const tags = form.tags.split(",").map(t => t.trim()).filter(Boolean);
       let attachments: string[] = [];
-      // Upload files to Supabase Storage (to be implemented next)
       if (files && files.length > 0) {
-        // Placeholder: just use file names for now
-        attachments = Array.from(files).map(f => f.name);
+        for (const file of Array.from(files)) {
+          // Use a unique path for each file (e.g., userId/timestamp_filename)
+          const filePath = `${user!.id}/${Date.now()}_${file.name}`;
+          const { data, error } = await supabase.storage.from("note-attachments").upload(filePath, file, { upsert: true });
+          if (error) throw error;
+          // Get public URL
+          const { data: urlData } = supabase.storage.from("note-attachments").getPublicUrl(filePath);
+          if (urlData?.publicUrl) attachments.push(urlData.publicUrl);
+        }
       }
       const { error } = await supabase.from("notes").insert({
         user_id: user!.id,
