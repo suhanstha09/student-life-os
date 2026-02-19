@@ -133,6 +133,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          attachments: string[] | null // Array of file URLs or storage keys
         }
         Insert: {
           color?: string | null
@@ -144,6 +145,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          attachments?: string[] | null
         }
         Update: {
           color?: string | null
@@ -155,6 +157,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          attachments?: string[] | null
         }
         Relationships: []
       }
