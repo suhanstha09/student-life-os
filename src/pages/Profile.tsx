@@ -59,23 +59,53 @@ const Profile = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1 font-medium">Display Name</label>
-          <input name="display_name" value={form.display_name} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
+          <input
+            name="display_name"
+            value={form.display_name}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground ${!editMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            disabled={!editMode}
+          />
         </div>
         <div>
           <label className="block mb-1 font-medium">Real Name</label>
-          <input name="real_name" value={form.real_name} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
+          <input
+            name="real_name"
+            value={form.real_name}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground ${!editMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            disabled={!editMode}
+          />
         </div>
         <div>
           <label className="block mb-1 font-medium">Email</label>
-          <input name="email" value={form.email} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled />
+          <input
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground opacity-60 cursor-not-allowed"
+            disabled
+          />
         </div>
         <div>
           <label className="block mb-1 font-medium">Phone Number</label>
-          <input name="phone" value={form.phone} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
+          <input
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground ${!editMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            disabled={!editMode}
+          />
         </div>
         <div>
           <label className="block mb-1 font-medium">Education</label>
-          <input name="education" value={form.education} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
+          <input
+            name="education"
+            value={form.education}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground ${!editMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            disabled={!editMode}
+          />
         </div>
         {editMode ? (
           <button type="submit" className="w-full py-2 rounded-lg bg-primary text-primary-foreground font-medium">Save</button>
