@@ -14,6 +14,7 @@ const Profile = () => {
     education: ""
   });
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -26,6 +27,7 @@ const Profile = () => {
       .then(({ data }) => {
         if (data) setForm(f => ({ ...f, ...data }));
         setLoading(false);
+        setEditMode(false);
       });
   }, [user]);
 
@@ -42,7 +44,10 @@ const Profile = () => {
       ...form
     });
     if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else toast({ title: "Profile updated!" });
+    else {
+      toast({ title: "Profile updated!" });
+      setEditMode(false);
+    }
   };
 
   if (!user) return <div className="p-8">Please sign in to view your profile.</div>;
@@ -54,11 +59,11 @@ const Profile = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1 font-medium">Display Name</label>
-          <input name="display_name" value={form.display_name} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" />
+          <input name="display_name" value={form.display_name} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
         </div>
         <div>
           <label className="block mb-1 font-medium">Real Name</label>
-          <input name="real_name" value={form.real_name} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" />
+          <input name="real_name" value={form.real_name} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
         </div>
         <div>
           <label className="block mb-1 font-medium">Email</label>
@@ -66,13 +71,17 @@ const Profile = () => {
         </div>
         <div>
           <label className="block mb-1 font-medium">Phone Number</label>
-          <input name="phone" value={form.phone} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" />
+          <input name="phone" value={form.phone} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
         </div>
         <div>
           <label className="block mb-1 font-medium">Education</label>
-          <input name="education" value={form.education} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" />
+          <input name="education" value={form.education} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground" disabled={!editMode} />
         </div>
-        <button type="submit" className="w-full py-2 rounded-lg bg-primary text-primary-foreground font-medium">Save</button>
+        {editMode ? (
+          <button type="submit" className="w-full py-2 rounded-lg bg-primary text-primary-foreground font-medium">Save</button>
+        ) : (
+          <button type="button" onClick={() => setEditMode(true)} className="w-full py-2 rounded-lg bg-primary text-primary-foreground font-medium">Edit</button>
+        )}
       </form>
     </div>
   );
