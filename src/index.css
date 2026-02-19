@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 225 44% 6%;
+    --foreground: 210 40% 96%;
+
+    --card: 225 38% 10%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 225 38% 10%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 190 90% 50%;
+    --primary-foreground: 225 44% 6%;
+
+    --secondary: 225 30% 16%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 225 25% 14%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 225 44% 6%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 225 20% 18%;
+    --input: 225 20% 18%;
+    --ring: 190 90% 50%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 225 44% 4%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 190 90% 50%;
+    --sidebar-primary-foreground: 225 44% 6%;
+    --sidebar-accent: 225 30% 12%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 225 20% 14%;
+    --sidebar-ring: 190 90% 50%;
+
+    /* Custom tokens */
+    --success: 160 84% 39%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 225 44% 6%;
+    --streak: 38 92% 50%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(190 90% 50%), hsl(210 90% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(38 92% 50%), hsl(25 95% 55%));
+    --gradient-card: linear-gradient(145deg, hsl(225 38% 12%), hsl(225 38% 8%));
+    --gradient-glow: radial-gradient(ellipse at top, hsl(190 90% 50% / 0.08), transparent 60%);
+
+    --shadow-glow: 0 0 30px -5px hsl(190 90% 50% / 0.2);
+    --shadow-card: 0 4px 24px -4px hsl(225 44% 2% / 0.5);
+    --shadow-elevated: 0 8px 40px -8px hsl(225 44% 2% / 0.6);
+
+    --glass-bg: hsl(225 38% 10% / 0.6);
+    --glass-border: hsl(225 20% 20% / 0.5);
+
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+  }
+
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-primary {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
