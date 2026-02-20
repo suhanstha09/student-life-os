@@ -34,18 +34,18 @@ const WeeklyGoalSettings: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 mb-6 flex flex-col gap-4 max-w-xs">
-      <label className="font-semibold text-foreground">Weekly Goal (minutes)</label>
+    <form onSubmit={handleSubmit} className="glass-card rounded-xl p-8 mb-8 flex flex-col gap-5 max-w-xs shadow-lg">
+      <label className="font-semibold text-foreground text-base mb-1">Weekly Goal (minutes)</label>
       <input
         type="number"
         min={1}
         value={goal}
         onChange={e => setGoal(Number(e.target.value))}
-        className="input border border-border rounded-lg px-3 py-2 text-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+        className="border border-border rounded-xl px-4 py-3 text-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
         disabled={loading}
         placeholder="Enter minutes"
       />
-      <button type="submit" className="btn bg-primary text-white rounded-lg py-2 font-bold" disabled={loading}>
+      <button type="submit" className="bg-primary text-white rounded-xl py-2.5 font-bold shadow-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" disabled={loading}>
         {loading ? "Saving..." : "Save Goal"}
       </button>
       {status && <span className="text-sm text-success mt-2">{status}</span>}
