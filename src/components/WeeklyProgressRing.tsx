@@ -88,9 +88,9 @@ const WeeklyProgressRing: React.FC = () => {
           ) : (
             <Flame className="w-7 h-7 text-primary mb-1 animate-pulse" />
           )}
-            <span className="font-bold text-xl tracking-tight text-foreground mt-1">
-            {loading ? "..." : `${Math.round(minutes)}/${goal} min`}
-          </span>
+            <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-background/80 border border-border shadow font-bold text-xl tracking-tight text-foreground mt-1 min-w-[90px] min-h-[38px]">
+              {loading ? "..." : `${Math.round(minutes)}/${goal} min`}
+            </span>
             <span className="text-xs text-muted-foreground mt-0.5">{loading ? "" : `${Math.round(percent)}%`}</span>
         </span>
       </div>
