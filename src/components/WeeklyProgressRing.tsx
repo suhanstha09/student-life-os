@@ -1,6 +1,6 @@
 // src/components/WeeklyProgressRing.tsx
 import React, { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, CheckCircle2, Flame } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -52,18 +52,18 @@ const WeeklyProgressRing: React.FC = () => {
   }, [user]);
 
   const percent = Math.min(100, (minutes / goal) * 100);
-  const radius = 36;
-  const stroke = 6;
+  const radius = 44;
+  const stroke = 8;
   const normalizedRadius = radius - stroke / 2;
   const circumference = normalizedRadius * 2 * Math.PI;
   const strokeDashoffset = circumference - (percent / 100) * circumference;
 
   return (
     <div className="flex flex-col items-center justify-center mb-4">
-      <div className="relative w-20 h-20">
+      <div className="relative w-28 h-28">
         <svg height={radius * 2} width={radius * 2}>
           <circle
-            stroke="#e5e7eb"
+            stroke="#232946"
             fill="transparent"
             strokeWidth={stroke}
             r={normalizedRadius}
@@ -71,23 +71,38 @@ const WeeklyProgressRing: React.FC = () => {
             cy={radius}
           />
           <circle
-            stroke="#6366f1"
+            stroke={percent >= 100 ? "#22c55e" : percent >= 70 ? "#facc15" : "#6366f1"}
             fill="transparent"
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={circumference + " " + circumference}
-            style={{ strokeDashoffset, transition: "stroke-dashoffset 0.5s" }}
+            style={{ strokeDashoffset, transition: "stroke-dashoffset 0.7s cubic-bezier(.4,2,.6,1)", filter: "drop-shadow(0 0 8px #6366f1aa)" }}
             r={normalizedRadius}
             cx={radius}
             cy={radius}
           />
         </svg>
-        <span className="absolute inset-0 flex flex-col items-center justify-center">
-          <TrendingUp className="w-5 h-5 text-primary mb-1" />
-          <span className="font-bold text-lg">{loading ? "..." : Math.round(percent) + "%"}</span>
+        <span className="absolute inset-0 flex flex-col items-center justify-center select-none">
+          {percent >= 100 ? (
+            <CheckCircle2 className="w-7 h-7 text-success mb-1 animate-bounce" />
+          ) : (
+            <Flame className="w-7 h-7 text-primary mb-1 animate-pulse" />
+          )}
+          <span className="font-bold text-xl tracking-tight text-foreground">
+            {loading ? "..." : `${Math.round(minutes)}/${goal} min`}
+          </span>
+          <span className="text-xs text-muted-foreground mt-1">{loading ? "" : `${Math.round(percent)}%`}</span>
         </span>
       </div>
-      <span className="text-xs text-muted-foreground mt-1">Weekly Goal</span>
+      <span className="text-sm text-muted-foreground mt-2">
+        {percent >= 100
+          ? "Goal complete! 🎉"
+          : percent >= 70
+            ? "Almost there! Keep going!"
+            : percent >= 30
+              ? "Great start!"
+              : "Let's get started!"}
+      </span>
     </div>
   );
 };
