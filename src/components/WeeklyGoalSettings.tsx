@@ -41,8 +41,9 @@ const WeeklyGoalSettings: React.FC = () => {
         min={1}
         value={goal}
         onChange={e => setGoal(Number(e.target.value))}
-        className="input border border-border rounded-lg px-3 py-2 text-lg"
+        className="input border border-border rounded-lg px-3 py-2 text-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         disabled={loading}
+        placeholder="Enter minutes"
       />
       <button type="submit" className="btn bg-primary text-white rounded-lg py-2 font-bold" disabled={loading}>
         {loading ? "Saving..." : "Save Goal"}
