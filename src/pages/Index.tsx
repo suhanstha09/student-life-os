@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { Timer, ClipboardList, Brain, Flame, BookOpen, Plus, ArrowRight, CheckCircle2, Clock, Target, TrendingUp, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import StatCard from "@/components/StatCard";
+import Motivation from "@/components/Motivation";
+import StreakCounter from "@/components/StreakCounter";
+import WeeklyProgressRing from "@/components/WeeklyProgressRing";
+import UpcomingDeadlines from "@/components/UpcomingDeadlines";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -70,6 +74,10 @@ const Index = () => {
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
+      <Motivation />
+      <StreakCounter />
+      <WeeklyProgressRing />
+      <UpcomingDeadlines assignments={assignments} />
       <motion.div variants={item} className="space-y-1">
         <h1 className="text-3xl font-display font-bold text-foreground">
           {greeting}
