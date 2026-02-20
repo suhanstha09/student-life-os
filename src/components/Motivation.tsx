@@ -23,7 +23,7 @@ const Motivation: React.FC = () => {
   const quote = getQuoteOfTheDay();
   return (
     <div className="glass-card rounded-xl p-6 mb-6 flex items-center gap-4">
-      <span role="img" aria-label="sparkles" className="text-2xl">✨</span>
+      <span className="font-semibold text-primary text-base mr-2 whitespace-nowrap">Quote of the Day</span>
       <span className="font-bold text-2xl text-foreground">{quote}</span>
     </div>
   );
