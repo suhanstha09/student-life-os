@@ -11,17 +11,27 @@ function getWeekStart(date = new Date()) {
   return d;
 }
 
-const WEEKLY_GOAL_MINUTES = 600; // Example: 10 hours
 
 const WeeklyProgressRing: React.FC = () => {
   const { user } = useAuth();
   const [minutes, setMinutes] = useState(0);
+  const [goal, setGoal] = useState(600); // default
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
+    setLoading(true);
+    // Fetch weekly goal
+    supabase
+      .from("weekly_goals")
+      .select("goal_minutes")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data && data.goal_minutes) setGoal(data.goal_minutes);
+      });
+    // Fetch weekly progress
     const fetchWeekly = async () => {
-      setLoading(true);
       const weekStart = getWeekStart();
       const weekStartStr = weekStart.toISOString().split("T")[0];
       const { data, error } = await supabase
@@ -41,7 +51,7 @@ const WeeklyProgressRing: React.FC = () => {
     fetchWeekly();
   }, [user]);
 
-  const percent = Math.min(100, (minutes / WEEKLY_GOAL_MINUTES) * 100);
+  const percent = Math.min(100, (minutes / goal) * 100);
   const radius = 36;
   const stroke = 6;
   const normalizedRadius = radius - stroke / 2;
