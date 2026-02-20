@@ -82,16 +82,16 @@ const WeeklyProgressRing: React.FC = () => {
             cy={radius}
           />
         </svg>
-        <span className="absolute inset-0 flex flex-col items-center justify-center select-none">
+          <span className="absolute inset-0 flex flex-col items-center justify-center select-none pointer-events-none">
           {percent >= 100 ? (
             <CheckCircle2 className="w-7 h-7 text-success mb-1 animate-bounce" />
           ) : (
             <Flame className="w-7 h-7 text-primary mb-1 animate-pulse" />
           )}
-          <span className="font-bold text-xl tracking-tight text-foreground">
+            <span className="font-bold text-xl tracking-tight text-foreground mt-1">
             {loading ? "..." : `${Math.round(minutes)}/${goal} min`}
           </span>
-          <span className="text-xs text-muted-foreground mt-1">{loading ? "" : `${Math.round(percent)}%`}</span>
+            <span className="text-xs text-muted-foreground mt-0.5">{loading ? "" : `${Math.round(percent)}%`}</span>
         </span>
       </div>
       <span className="text-sm text-muted-foreground mt-2">
