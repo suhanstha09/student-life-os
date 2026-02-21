@@ -45,7 +45,15 @@ const WeeklyGoalSettings: React.FC = () => {
         disabled={loading}
         placeholder="Enter minutes"
       />
-      <button type="submit" className="bg-primary text-white rounded-xl py-2.5 font-bold shadow-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" disabled={loading}>
+      <button
+        type="submit"
+        className={
+          `bg-primary text-white rounded-xl py-2.5 font-bold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+            status === "Goal updated!" ? "opacity-60 pointer-events-none" : "hover:bg-primary/90"
+          }`
+        }
+        disabled={loading || status === "Goal updated!"}
+      >
         {loading ? "Saving..." : status === "Goal updated!" ? "Edit Goal" : "Save Goal"}
       </button>
       {status && <span className="text-sm text-success mt-2">{status}</span>}
