@@ -78,7 +78,7 @@ const Index = () => {
       <Motivation />
       <StreakCounter />
       <WeeklyGoalSettings />
-      <WeeklyProgressRing />
+      {/* <WeeklyProgressRing /> Removed circular progress indicator */}
       <UpcomingDeadlines assignments={assignments} />
       <motion.div variants={item} className="space-y-1">
         <h1 className="text-3xl font-display font-bold text-foreground">
