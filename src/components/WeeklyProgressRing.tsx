@@ -52,47 +52,25 @@ const WeeklyProgressRing: React.FC = () => {
   }, [user]);
 
   const percent = Math.min(100, (minutes / goal) * 100);
-  const radius = 44;
-  const stroke = 8;
-  const normalizedRadius = radius - stroke / 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (percent / 100) * circumference;
 
   return (
     <div className="flex flex-col items-center justify-center mb-4">
-      <div className="relative w-28 h-28">
-        <svg height={radius * 2} width={radius * 2}>
-          <circle
-            stroke="#232946"
-            fill="transparent"
-            strokeWidth={stroke}
-            r={normalizedRadius}
-            cx={radius}
-            cy={radius}
-          />
-          <circle
-            stroke={percent >= 100 ? "#22c55e" : percent >= 70 ? "#facc15" : "#6366f1"}
-            fill="transparent"
-            strokeWidth={stroke}
-            strokeLinecap="round"
-            strokeDasharray={circumference + " " + circumference}
-            style={{ strokeDashoffset, transition: "stroke-dashoffset 0.7s cubic-bezier(.4,2,.6,1)", filter: "drop-shadow(0 0 8px #6366f1aa)" }}
-            r={normalizedRadius}
-            cx={radius}
-            cy={radius}
-          />
-        </svg>
-          <span className="absolute inset-0 flex flex-col items-center justify-center select-none pointer-events-none">
-          {percent >= 100 ? (
-            <CheckCircle2 className="w-7 h-7 text-success mb-1 animate-bounce" />
-          ) : (
-            <Flame className="w-7 h-7 text-primary mb-1 animate-pulse" />
-          )}
-            <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-background/80 border border-border shadow font-bold text-xl tracking-tight text-foreground mt-1 min-w-[90px] min-h-[38px]">
-              {loading ? "..." : `${Math.round(minutes)}/${goal} min`}
-            </span>
-            <span className="text-xs text-muted-foreground mt-0.5">{loading ? "" : `${Math.round(percent)}%`}</span>
+      <div className="w-64 p-6 bg-background/80 border border-border shadow rounded-xl flex flex-col items-center">
+        {percent >= 100 ? (
+          <CheckCircle2 className="w-7 h-7 text-success mb-1 animate-bounce" />
+        ) : (
+          <Flame className="w-7 h-7 text-primary mb-1 animate-pulse" />
+        )}
+        <span className="font-bold text-2xl tracking-tight text-foreground mt-1">
+          {loading ? "..." : `${Math.round(minutes)}/${goal} min`}
         </span>
+        <div className="w-full bg-muted-foreground/20 rounded-lg h-4 mt-4 mb-2">
+          <div
+            className="bg-primary h-4 rounded-lg transition-all duration-700"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+        <span className="text-xs text-muted-foreground">{loading ? "" : `${Math.round(percent)}%`}</span>
       </div>
       <span className="text-sm text-muted-foreground mt-2">
         {percent >= 100
