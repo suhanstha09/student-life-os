@@ -120,8 +120,8 @@ const Focus = () => {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
       {sessionType === "focus" && (
-        <div className="mb-4 flex items-center gap-2 justify-center">
-          <label htmlFor="focus-minutes" className="text-sm text-muted-foreground">Focus Minutes:</label>
+        <div className="mb-8 flex items-center justify-center">
+          <label htmlFor="focus-minutes" className="text-base font-medium text-foreground mr-3">Focus Minutes:</label>
           <input
             id="focus-minutes"
             type="number"
@@ -129,7 +129,7 @@ const Focus = () => {
             max={180}
             value={customFocusMinutes}
             onChange={e => setCustomFocusMinutes(Number(e.target.value))}
-            className="w-20 px-2 py-1 rounded border bg-background text-foreground"
+            className="w-24 px-4 py-2 rounded-lg border border-border bg-secondary text-foreground text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm disabled:opacity-60"
             disabled={isRunning}
           />
         </div>
