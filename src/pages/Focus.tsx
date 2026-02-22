@@ -120,18 +120,23 @@ const Focus = () => {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
       {sessionType === "focus" && (
-        <div className="mb-8 flex items-center justify-center">
-          <label htmlFor="focus-minutes" className="text-base font-medium text-foreground mr-3">Focus Minutes:</label>
-          <input
-            id="focus-minutes"
-            type="number"
-            min={1}
-            max={180}
-            value={customFocusMinutes}
-            onChange={e => setCustomFocusMinutes(Number(e.target.value))}
-            className="w-24 px-4 py-2 rounded-lg border border-border bg-secondary text-foreground text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm disabled:opacity-60"
-            disabled={isRunning}
-          />
+        <div className="mb-8 flex justify-center">
+          <div className="bg-secondary border border-border rounded-xl p-6 flex flex-col items-center w-[320px] shadow">
+            <label htmlFor="focus-minutes" className="block text-sm font-medium text-foreground mb-2">Focus Minutes</label>
+            <div className="flex w-full">
+              <input
+                id="focus-minutes"
+                type="number"
+                min={1}
+                max={180}
+                value={customFocusMinutes}
+                onChange={e => setCustomFocusMinutes(Number(e.target.value))}
+                className="flex-1 px-4 py-2 rounded-l-md border border-border bg-background text-foreground text-base font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all disabled:opacity-60"
+                disabled={isRunning}
+              />
+              <span className="inline-flex items-center px-3 rounded-r-md border-t border-b border-r border-border bg-background text-muted-foreground text-base">min</span>
+            </div>
+          </div>
         </div>
       )}
       <motion.div variants={item}>
