@@ -30,19 +30,7 @@ const AppSidebar = () => {
       className="fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border z-50 flex flex-col"
     >
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-            <img src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-7 h-7 object-contain" />
-          </div>
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.img initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-24 h-8 object-contain" />
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+      // ...existing code...
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
