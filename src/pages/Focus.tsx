@@ -38,7 +38,10 @@ const Focus = () => {
         .gte("completed_at", `${today}T00:00:00`)
         .lte("completed_at", `${today}T23:59:59`)
         .order("completed_at", { ascending: false });
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase focus_sessions fetch error:", error);
+        throw error;
+      }
       return data;
     },
   });
@@ -50,7 +53,10 @@ const Focus = () => {
         session_type: sessionType,
         duration_seconds: durationSeconds,
       });
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase focus_sessions insert error:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["focus_sessions_today"] });
