@@ -37,10 +37,8 @@ const AppSidebar = () => {
           </div>
           <AnimatePresence>
             {!collapsed && (
-              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="font-display font-bold text-foreground whitespace-nowrap">
-                Student Life OS
-              </motion.span>
+              <motion.img initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-24 h-8 object-contain" />
             )}
           </AnimatePresence>
         </div>
