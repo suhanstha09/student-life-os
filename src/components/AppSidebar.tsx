@@ -33,7 +33,7 @@ const AppSidebar = () => {
 
       <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
         <div className="w-full flex justify-center items-center">
-          <img src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-64 h-64 object-contain" />
+          <img src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-[256px] h-[256px] object-contain" />
         </div>
       </div>
 
