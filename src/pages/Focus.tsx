@@ -22,12 +22,15 @@ const Focus = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [sessionType, setSessionType] = useState<SessionType>("focus");
+  const [customFocusMinutes, setCustomFocusMinutes] = useState(25);
   const [timeLeft, setTimeLeft] = useState(sessionConfig.focus.duration);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
   const config = sessionConfig[sessionType];
+  // If focus session, use custom duration
+  const effectiveDuration = sessionType === "focus" ? customFocusMinutes * 60 : config.duration;
 
   const { data: todaySessions = [] } = useQuery({
     queryKey: ["focus_sessions_today"],
@@ -70,9 +73,13 @@ const Focus = () => {
     return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
   };
 
-  const progress = 1 - timeLeft / config.duration;
+  const progress = 1 - timeLeft / effectiveDuration;
   const circumference = 2 * Math.PI * 140;
   const strokeDashoffset = circumference * (1 - progress);
+  // Update timer when session type or custom duration changes
+  useEffect(() => {
+    setTimeLeft(effectiveDuration);
+  }, [sessionType, effectiveDuration]);
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
@@ -93,13 +100,17 @@ const Focus = () => {
   const switchSession = (type: SessionType) => {
     setIsRunning(false);
     setSessionType(type);
-    setTimeLeft(sessionConfig[type].duration);
+    if (type === "focus") {
+      setTimeLeft(customFocusMinutes * 60);
+    } else {
+      setTimeLeft(sessionConfig[type].duration);
+    }
     startTimeRef.current = null;
   };
 
   const reset = () => {
     setIsRunning(false);
-    setTimeLeft(config.duration);
+    setTimeLeft(effectiveDuration);
     startTimeRef.current = null;
   };
 
@@ -108,6 +119,21 @@ const Focus = () => {
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
+      {sessionType === "focus" && (
+        <div className="mb-4 flex items-center gap-2 justify-center">
+          <label htmlFor="focus-minutes" className="text-sm text-muted-foreground">Focus Minutes:</label>
+          <input
+            id="focus-minutes"
+            type="number"
+            min={1}
+            max={180}
+            value={customFocusMinutes}
+            onChange={e => setCustomFocusMinutes(Number(e.target.value))}
+            className="w-20 px-2 py-1 rounded border bg-background text-foreground"
+            disabled={isRunning}
+          />
+        </div>
+      )}
       <motion.div variants={item}>
         <h1 className="text-3xl font-display font-bold text-foreground">Focus Session</h1>
         <p className="text-muted-foreground mt-1">Deep work, distraction-free.</p>
