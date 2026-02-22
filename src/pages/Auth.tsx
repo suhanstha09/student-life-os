@@ -59,7 +59,7 @@ const Auth = () => {
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <Flame className="w-5 h-5 text-primary-foreground" />
           </div>
-          <img src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-12 h-12 mx-auto mb-2" />
+          <h1 className="text-2xl font-display font-bold text-foreground">Student Life OS</h1>
         </div>
 
         <h2 className="text-xl font-display font-semibold text-foreground mb-1">
