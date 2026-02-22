@@ -31,6 +31,14 @@ const AppSidebar = () => {
     >
       {/* Logo */}
 
+      <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+            <img src="/studentlifeosdark.png" alt="Student Life OS Logo" className="w-7 h-7 object-contain" />
+          </div>
+        </div>
+      </div>
+
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
