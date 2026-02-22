@@ -30,7 +30,7 @@ const AppSidebar = () => {
       className="fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border z-50 flex flex-col"
     >
       {/* Logo */}
-      // ...existing code...
+
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
