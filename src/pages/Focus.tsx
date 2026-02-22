@@ -119,8 +119,24 @@ const Focus = () => {
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
-      {sessionType === "focus" && (
-        <div className="mb-8 flex justify-center">
+      {/* ...existing code... */}
+      <motion.div variants={item}>
+        <h1 className="text-3xl font-display font-bold text-foreground">Focus Session</h1>
+        <p className="text-muted-foreground mt-1">Deep work, distraction-free.</p>
+      </motion.div>
+
+      <motion.div variants={item} className="flex flex-col items-center gap-6">
+        <div className="flex rounded-xl bg-secondary border border-border overflow-hidden mb-2">
+          {(Object.keys(sessionConfig) as SessionType[]).map(type => (
+            <button key={type} onClick={() => switchSession(type)}
+              className={`px-6 py-3 text-sm font-medium transition-colors ${sessionType === type ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              {type === "focus" && <Target className="w-4 h-4 inline mr-2" />}
+              {type !== "focus" && <Coffee className="w-4 h-4 inline mr-2" />}
+              {sessionConfig[type].label}
+            </button>
+          ))}
+        </div>
+        {sessionType === "focus" && (
           <div className="bg-secondary border border-border rounded-xl p-6 flex flex-col items-center w-[320px] shadow">
             <label htmlFor="focus-minutes" className="block text-sm font-medium text-foreground mb-2">Focus Minutes</label>
             <div className="flex w-full">
@@ -137,24 +153,7 @@ const Focus = () => {
               <span className="inline-flex items-center px-3 rounded-r-md border-t border-b border-r border-border bg-background text-muted-foreground text-base">min</span>
             </div>
           </div>
-        </div>
-      )}
-      <motion.div variants={item}>
-        <h1 className="text-3xl font-display font-bold text-foreground">Focus Session</h1>
-        <p className="text-muted-foreground mt-1">Deep work, distraction-free.</p>
-      </motion.div>
-
-      <motion.div variants={item} className="flex justify-center">
-        <div className="flex rounded-xl bg-secondary border border-border overflow-hidden">
-          {(Object.keys(sessionConfig) as SessionType[]).map(type => (
-            <button key={type} onClick={() => switchSession(type)}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${sessionType === type ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
-              {type === "focus" && <Target className="w-4 h-4 inline mr-2" />}
-              {type !== "focus" && <Coffee className="w-4 h-4 inline mr-2" />}
-              {sessionConfig[type].label}
-            </button>
-          ))}
-        </div>
+        )}
       </motion.div>
 
       <motion.div variants={item} className="flex justify-center">
