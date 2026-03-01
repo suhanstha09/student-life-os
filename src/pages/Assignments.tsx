@@ -2,10 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, CheckCircle2, Circle, Clock, AlertTriangle, Calendar, Tag, Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useAssignments, useAddAssignment, useToggleAssignment, useDeleteAssignment } from "@/hooks/useAssignments";
 
 const priorityConfig = {
   high: { color: "bg-destructive/20 text-destructive", icon: AlertTriangle, label: "High" },
@@ -18,25 +17,20 @@ const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 const Assignments = () => {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", course: "", due_date: "", priority: "medium" as string });
 
-  const { data: assignments = [], isLoading } = useQuery({
-    queryKey: ["assignments"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("assignments").select("*").order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: assignments = [], isLoading } = useAssignments();
+  const addMutation = useAddAssignment();
+  const toggleMutation = useToggleAssignment();
+  const deleteMutation = useDeleteAssignment();
 
-  const addMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.from("assignments").insert({
+  const handleAdd = async () => {
+    try {
+      await addMutation.mutateAsync({
         user_id: user!.id,
         title: form.title,
         description: form.description,
@@ -44,38 +38,13 @@ const Assignments = () => {
         due_date: form.due_date || null,
         priority: form.priority,
       });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
       setForm({ title: "", description: "", course: "", due_date: "", priority: "medium" });
       setOpen(false);
       toast({ title: "Assignment added!" });
-    },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
-
-  const toggleMutation = useMutation({
-    mutationFn: async ({ id, completed, progress }: { id: string; completed: boolean; progress: number }) => {
-      const { error } = await supabase.from("assignments").update({
-        completed: !completed,
-        progress: !completed ? 100 : progress,
-      }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["assignments"] }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("assignments").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      toast({ title: "Assignment deleted" });
-    },
-  });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
 
   const filtered = assignments
     .filter(a => filter === "all" || (filter === "active" ? !a.completed : a.completed))
