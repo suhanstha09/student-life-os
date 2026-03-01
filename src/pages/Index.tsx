@@ -7,9 +7,11 @@ import StreakCounter from "@/components/StreakCounter";
 import WeeklyProgressRing from "@/components/WeeklyProgressRing";
 import WeeklyGoalSettings from "@/components/WeeklyGoalSettings";
 import UpcomingDeadlines from "@/components/UpcomingDeadlines";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
+import { useAssignments } from "@/hooks/useAssignments";
+import { useNotes } from "@/hooks/useNotes";
+import { useFocusSessionsToday } from "@/hooks/useFocusSessions";
+import { useProfile } from "@/hooks/useProfile";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
@@ -25,47 +27,11 @@ const Index = () => {
   const { user } = useAuth();
   const today = new Date();
   const greeting = today.getHours() < 12 ? "Good morning" : today.getHours() < 17 ? "Good afternoon" : "Good evening";
-  const todayStr = today.toISOString().split("T")[0];
 
-  // Fetch display_name from profiles
-  const { data: profile } = useQuery({
-    queryKey: ["profile", user?.id],
-    enabled: !!user,
-    queryFn: async () => {
-      if (!user) return null;
-      const { data, error } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
-      if (error) return null;
-      return data;
-    },
-  });
-
-  const { data: assignments = [] } = useQuery({
-    queryKey: ["assignments"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("assignments").select("*").order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: notes = [] } = useQuery({
-    queryKey: ["notes"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("notes").select("*").order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: todaySessions = [] } = useQuery({
-    queryKey: ["focus_sessions_today"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("focus_sessions").select("*")
-        .gte("completed_at", `${todayStr}T00:00:00`).lte("completed_at", `${todayStr}T23:59:59`);
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: profile } = useProfile();
+  const { data: assignments = [] } = useAssignments();
+  const { data: notes = [] } = useNotes();
+  const { data: todaySessions = [] } = useFocusSessionsToday();
 
   const focusSessions = todaySessions.filter(s => s.session_type === "focus");
   const totalFocusMinutes = focusSessions.reduce((sum, s) => sum + (s.duration_seconds / 60), 0);
