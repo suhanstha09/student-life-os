@@ -58,12 +58,12 @@ const Assignments = () => {
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 relative z-10">
       <motion.div variants={item} className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-foreground">Assignments</h1>
-          <p className="text-muted-foreground mt-1">{assignments.filter(a => !a.completed).length} pending · {assignments.filter(a => a.completed).length} completed</p>
+          <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">Assignments</h1>
+          <p className="text-muted-foreground mt-2 text-sm">{assignments.filter(a => !a.completed).length} pending · {assignments.filter(a => a.completed).length} completed</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg btn-primary">
               <Plus className="w-4 h-4" /> Add Assignment
             </button>
           </DialogTrigger>
@@ -71,11 +71,11 @@ const Assignments = () => {
             <DialogHeader><DialogTitle className="font-display">New Assignment</DialogTitle></DialogHeader>
             <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Title" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                className="input-base" />
               <input placeholder="Course (e.g. CS 201)" value={form.course} onChange={e => setForm(f => ({ ...f, course: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                className="input-base" />
               <textarea placeholder="Description" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[80px]" />
+                className="textarea-base" />
               <div className="flex gap-3">
                 <input type="date" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
                   className="flex-1 px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
@@ -87,7 +87,7 @@ const Assignments = () => {
                 </select>
               </div>
               <button type="submit" disabled={addMutation.isPending}
-                className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50">
+                className="w-full btn-primary">
                 {addMutation.isPending ? "Adding..." : "Add Assignment"}
               </button>
             </form>
