@@ -1,47 +1,19 @@
 import { motion } from "framer-motion";
 import { Clock, Brain, ClipboardList, Flame, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useAssignments } from "@/hooks/useAssignments";
+import { useNotes } from "@/hooks/useNotes";
+import { useFocusSessionsAll } from "@/hooks/useFocusSessions";
+import { useLearningItems } from "@/hooks/useLearningItems";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
 const Analytics = () => {
-  const { data: assignments = [] } = useQuery({
-    queryKey: ["assignments"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("assignments").select("*");
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: notes = [] } = useQuery({
-    queryKey: ["notes"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("notes").select("*");
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: sessions = [] } = useQuery({
-    queryKey: ["focus_sessions_all"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("focus_sessions").select("*").order("completed_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: learningItems = [] } = useQuery({
-    queryKey: ["learning_items"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("learning_items").select("*");
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: assignments = [] } = useAssignments();
+  const { data: notes = [] } = useNotes();
+  const { data: sessions = [] } = useFocusSessionsAll();
+  const { data: learningItems = [] } = useLearningItems();
 
   const focusSessions = sessions.filter(s => s.session_type === "focus");
   const totalFocusHours = focusSessions.reduce((sum, s) => sum + (s.duration_seconds / 3600), 0);
