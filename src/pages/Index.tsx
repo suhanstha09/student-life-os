@@ -46,12 +46,12 @@ const Index = () => {
       <WeeklyGoalSettings />
       <WeeklyProgressRing />
       <UpcomingDeadlines assignments={assignments} />
-      <motion.div variants={item} className="space-y-1">
-        <h1 className="text-3xl font-display font-bold text-foreground">
+      <motion.div variants={item} className="space-y-2">
+        <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">
           {greeting}
           {profile?.display_name ? `, ${profile.display_name}` : user?.email ? `, ${user.email}` : ""} 👋
         </h1>
-        <p className="text-muted-foreground">Here's your productivity overview for today.</p>
+        <p className="text-muted-foreground text-lg">Here's your productivity overview for today.</p>
       </motion.div>
 
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -62,10 +62,13 @@ const Index = () => {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div variants={item} className="lg:col-span-2 glass-card rounded-xl p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-display font-semibold text-foreground">Upcoming Assignments</h2>
-            <Link to="/assignments" className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors">
+        <motion.div variants={item} className="lg:col-span-2 glass-card rounded-2xl p-6 card-hover">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-display font-semibold text-foreground">Upcoming Assignments</h2>
+              <p className="text-xs text-muted-foreground mt-1">Next deadlines to focus on</p>
+            </div>
+            <Link to="/assignments" className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-smooth">
               View all <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -94,47 +97,53 @@ const Index = () => {
           </div>
         </motion.div>
 
-        <motion.div variants={item} className="glass-card rounded-xl p-6">
-          <h2 className="text-lg font-display font-semibold text-foreground mb-5">Quick Actions</h2>
+        <motion.div variants={item} className="glass-card rounded-2xl p-6 card-hover">
+          <h2 className="text-xl font-display font-semibold text-foreground mb-6">Quick Actions</h2>
           <div className="space-y-3">
-            <Link to="/focus" className="flex items-center gap-3 p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary group">
-              <Target className="w-5 h-5" />
-              <span className="text-sm font-medium">Start Focus Session</span>
-              <ArrowRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Link to="/focus" className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 hover:from-primary/30 hover:to-primary/20 transition-smooth text-primary group border border-primary/10">
+              <Target className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-semibold">Start Focus Session</span>
+              <ArrowRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-smooth" />
             </Link>
-            <Link to="/assignments" className="flex items-center gap-3 p-3 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors text-foreground group">
-              <Plus className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm font-medium">Add Assignment</span>
-              <ArrowRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+            <Link to="/assignments" className="flex items-center gap-3 p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-smooth text-foreground group">
+              <Plus className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-smooth" />
+              <span className="text-sm font-semibold">Add Assignment</span>
+              <ArrowRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-smooth text-muted-foreground group-hover:text-primary" />
             </Link>
-            <Link to="/notes" className="flex items-center gap-3 p-3 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors text-foreground group">
-              <BookOpen className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm font-medium">New Note</span>
-              <ArrowRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+            <Link to="/notes" className="flex items-center gap-3 p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-smooth text-foreground group">
+              <BookOpen className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-smooth" />
+              <span className="text-sm font-semibold">New Note</span>
+              <ArrowRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-smooth text-muted-foreground group-hover:text-accent" />
             </Link>
           </div>
         </motion.div>
       </div>
 
       {recentNotes.length > 0 && (
-        <motion.div variants={item} className="glass-card rounded-xl p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-display font-semibold text-foreground">Recent Notes</h2>
-            <Link to="/notes" className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors">
+        <motion.div variants={item} className="glass-card rounded-2xl p-6 card-hover">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-display font-semibold text-foreground">Recent Notes</h2>
+              <p className="text-xs text-muted-foreground mt-1">Your latest learning</p>
+            </div>
+            <Link to="/notes" className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-smooth">
               View all <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {recentNotes.map((n) => (
-              <div key={n.id} className="flex items-center gap-4 p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer">
-                <Brain className="w-5 h-5 text-primary flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{n.title}</p>
-                  <div className="flex gap-2 mt-1">
-                    {(n.tags || []).slice(0, 3).map((t: string) => (
-                      <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{t}</span>
-                    ))}
-                  </div>
+              <div key={n.id} className="flex flex-col gap-3 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-smooth cursor-pointer group">
+                <div className="flex items-start justify-between">
+                  <Brain className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                  <p className="text-xs text-muted-foreground">{n.title.substring(0, 30)}</p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {(n.tags || []).slice(0, 3).map((t: string) => (
+                    <span key={t} className="text-xs px-2.5 py-1 rounded-full badge-primary">{t}</span>
+                  ))}
+                  {(n.tags || []).length > 3 && (
+                    <span className="text-xs px-2.5 py-1 rounded-full badge-primary">+{(n.tags || []).length - 3}</span>
+                  )}
                 </div>
               </div>
             ))}
