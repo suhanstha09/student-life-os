@@ -69,7 +69,7 @@ const Assignments = () => {
           </DialogTrigger>
           <DialogContent className="glass-card border-border">
             <DialogHeader><DialogTitle className="font-display">New Assignment</DialogTitle></DialogHeader>
-            <form onSubmit={e => { e.preventDefault(); addMutation.mutate(); }} className="space-y-4">
+            <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Title" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
               <input placeholder="Course (e.g. CS 201)" value={form.course} onChange={e => setForm(f => ({ ...f, course: e.target.value }))}
