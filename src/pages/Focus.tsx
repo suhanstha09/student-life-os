@@ -2,9 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, RotateCcw, SkipForward, Coffee, Target, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useFocusSessionsToday, useSaveFocusSession } from "@/hooks/useFocusSessions";
 
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
@@ -19,7 +18,6 @@ const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
 const Focus = () => {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [sessionType, setSessionType] = useState<SessionType>("focus");
   const [customFocusMinutes, setCustomFocusMinutes] = useState(25);
@@ -32,40 +30,8 @@ const Focus = () => {
   // If focus session, use custom duration
   const effectiveDuration = sessionType === "focus" ? customFocusMinutes * 60 : config.duration;
 
-  const { data: todaySessions = [] } = useQuery({
-    queryKey: ["focus_sessions_today"],
-    queryFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const { data, error } = await supabase.from("focus_sessions")
-        .select("*")
-        .gte("completed_at", `${today}T00:00:00`)
-        .lte("completed_at", `${today}T23:59:59`)
-        .order("completed_at", { ascending: false });
-      if (error) {
-        console.error("Supabase focus_sessions fetch error:", error);
-        throw error;
-      }
-      return data;
-    },
-  });
-
-  const saveMutation = useMutation({
-    mutationFn: async (durationSeconds: number) => {
-      const { error } = await supabase.from("focus_sessions").insert({
-        user_id: user!.id,
-        session_type: sessionType,
-        duration_seconds: durationSeconds,
-      });
-      if (error) {
-        console.error("Supabase focus_sessions insert error:", error);
-        throw error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["focus_sessions_today"] });
-      toast({ title: "Session completed! 🎉" });
-    },
-  });
+  const { data: todaySessions = [] } = useFocusSessionsToday();
+  const saveMutation = useSaveFocusSession();
 
   const formatTime = (s: number) => {
     const min = Math.floor(s / 60);
@@ -91,7 +57,11 @@ const Focus = () => {
         setIsRunning(false);
         const elapsed = startTimeRef.current ? Math.round((Date.now() - startTimeRef.current) / 1000) : config.duration;
         startTimeRef.current = null;
-        saveMutation.mutate(elapsed);
+        saveMutation.mutate({
+          session_type: sessionType,
+          duration_seconds: elapsed,
+        });
+        toast({ title: "Session completed! 🎉" });
       }
     }
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
