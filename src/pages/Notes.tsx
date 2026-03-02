@@ -2,10 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, Brain, Hash, Clock, Link2, FileText, Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useNotes, useAddNote, useDeleteNote } from "@/hooks/useNotes";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
@@ -19,7 +18,6 @@ const colorOptions = [
 
 const Notes = () => {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -28,61 +26,29 @@ const Notes = () => {
   const [form, setForm] = useState({ title: "", content: "", tags: "", color: colorOptions[0] });
   const [files, setFiles] = useState<FileList | null>(null);
 
-  const { data: notes = [], isLoading } = useQuery({
-    queryKey: ["notes"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("notes").select("*").order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: notes = [], isLoading } = useNotes();
+  const addMutation = useAddNote();
+  const deleteMutation = useDeleteNote();
 
-  const addMutation = useMutation({
-    mutationFn: async () => {
+  const handleAdd = async () => {
+    try {
       const tags = form.tags.split(",").map(t => t.trim()).filter(Boolean);
-      let attachments: string[] = [];
-      if (files && files.length > 0) {
-        for (const file of Array.from(files)) {
-          // Use a unique path for each file (e.g., userId/timestamp_filename)
-          const filePath = `${user!.id}/${Date.now()}_${file.name}`;
-          const { data, error } = await supabase.storage.from("note-attachments").upload(filePath, file, { upsert: true });
-          if (error) throw error;
-          // Get public URL
-          const { data: urlData } = supabase.storage.from("note-attachments").getPublicUrl(filePath);
-          if (urlData?.publicUrl) attachments.push(urlData.publicUrl);
-        }
-      }
-      const { error } = await supabase.from("notes").insert({
-        user_id: user!.id,
+      await addMutation.mutateAsync({
         title: form.title,
         content: form.content,
         tags,
         color: form.color,
-        attachments,
+        attachments: [],
+        files,
       });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
       setForm({ title: "", content: "", tags: "", color: colorOptions[0] });
       setFiles(null);
       setOpen(false);
       toast({ title: "Note created!" });
-    },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("notes").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      setSelectedNote(null);
-      toast({ title: "Note deleted" });
-    },
-  });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
 
   const allTags = [...new Set(notes.flatMap(n => n.tags || []))];
   const filtered = notes
@@ -108,7 +74,7 @@ const Notes = () => {
           </DialogTrigger>
           <DialogContent className="glass-card border-border">
             <DialogHeader><DialogTitle className="font-display">New Note</DialogTitle></DialogHeader>
-            <form onSubmit={e => { e.preventDefault(); addMutation.mutate(); }} className="space-y-4">
+            <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Title" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
               <textarea placeholder="Content" value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
