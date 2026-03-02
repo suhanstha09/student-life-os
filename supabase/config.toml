@@ -1,1 +1,20 @@
 project_id = "xppifzriimzpaxbgegty"
+
+[api]
+enabled = true
+
+[auth]
+enable_signup = true
+enable_email_signup = true
+
+# CORS settings for development
+[auth.jwt]
+secret = "your-jwt-secret"
+
+[cors]
+allowed_origins = [
+  "http://localhost:8080",
+  "http://localhost:3000",
+  "http://127.0.0.1:8080",
+  "http://student-life-os-final.vercel.app"
+]
