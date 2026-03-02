@@ -2,11 +2,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, BookOpen, Clock, RotateCcw, Brain, Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { formatDistanceToNow } from "date-fns";
+import { useLearningItems, useAddLearningItem, useReviewLearningItem, useDeleteLearningItem } from "@/hooks/useLearningItems";
 
 const getMasteryColor = (m: number) => {
   if (m >= 80) return "text-success";
@@ -25,71 +24,36 @@ const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 const Learning = () => {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ topic: "", course: "" });
 
-  const { data: learningItems = [], isLoading } = useQuery({
-    queryKey: ["learning_items"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("learning_items").select("*").order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: learningItems = [], isLoading } = useLearningItems();
+  const addMutation = useAddLearningItem();
+  const reviewMutation = useReviewLearningItem();
+  const deleteMutation = useDeleteLearningItem();
 
-  const addMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.from("learning_items").insert({
-        user_id: user!.id,
-        topic: form.topic,
-        course: form.course,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["learning_items"] });
+  const handleAdd = async () => {
+    try {
+      await addMutation.mutateAsync(form);
       setForm({ topic: "", course: "" });
       setOpen(false);
       toast({ title: "Topic added!" });
-    },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
 
-  const reviewMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const item = learningItems.find(i => i.id === id);
-      if (!item) return;
-      const newMastery = Math.min(100, item.mastery + 10);
-      const nextReviewDays = Math.pow(2, item.review_count);
-      const nextReview = new Date();
-      nextReview.setDate(nextReview.getDate() + nextReviewDays);
-
-      const { error } = await supabase.from("learning_items").update({
-        mastery: newMastery,
-        review_count: item.review_count + 1,
-        last_reviewed_at: new Date().toISOString(),
-        next_review_at: nextReview.toISOString(),
-      }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["learning_items"] });
-      toast({ title: "Reviewed! Mastery increased 📈" });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("learning_items").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["learning_items"] });
-      toast({ title: "Topic deleted" });
-    },
-  });
+  const handleReview = (id: string) => {
+    const item = learningItems.find(i => i.id === id);
+    if (!item) return;
+    reviewMutation.mutate({
+      id,
+      currentMastery: item.mastery,
+      reviewCount: item.review_count,
+    });
+    toast({ title: "Reviewed! Mastery increased 📈" });
+  };
 
   const now = new Date();
   const dueToday = learningItems.filter(i => new Date(i.next_review_at) <= now);
@@ -113,7 +77,7 @@ const Learning = () => {
           </DialogTrigger>
           <DialogContent className="glass-card border-border">
             <DialogHeader><DialogTitle className="font-display">New Topic</DialogTitle></DialogHeader>
-            <form onSubmit={e => { e.preventDefault(); addMutation.mutate(); }} className="space-y-4">
+            <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Topic name" required value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))}
                 className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
               <input placeholder="Course (e.g. CS 201)" value={form.course} onChange={e => setForm(f => ({ ...f, course: e.target.value }))}
@@ -142,7 +106,7 @@ const Learning = () => {
                   <p className="text-sm font-medium text-foreground">{i.topic}</p>
                   <p className="text-xs text-muted-foreground">{i.course}</p>
                 </div>
-                <button onClick={() => reviewMutation.mutate(i.id)}
+                <button onClick={() => handleReview(i.id)}
                   className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-medium hover:bg-accent/90 transition-colors">
                   Review Now
                 </button>
