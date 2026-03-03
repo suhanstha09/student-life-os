@@ -66,12 +66,12 @@ const Learning = () => {
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 relative z-10">
       <motion.div variants={item} className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-foreground">Learning Log</h1>
-          <p className="text-muted-foreground mt-1">Spaced repetition · {dueToday.length} due for review</p>
+          <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">Learning Log</h1>
+          <p className="text-muted-foreground mt-2 text-sm">Spaced repetition · {dueToday.length} due for review</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg btn-primary">
               <Plus className="w-4 h-4" /> Add Topic
             </button>
           </DialogTrigger>
@@ -79,11 +79,11 @@ const Learning = () => {
             <DialogHeader><DialogTitle className="font-display">New Topic</DialogTitle></DialogHeader>
             <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Topic name" required value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                className="input-base" />
               <input placeholder="Course (e.g. CS 201)" value={form.course} onChange={e => setForm(f => ({ ...f, course: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                className="input-base" />
               <button type="submit" disabled={addMutation.isPending}
-                className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50">
+                className="w-full btn-primary">
                 {addMutation.isPending ? "Adding..." : "Add Topic"}
               </button>
             </form>
@@ -92,22 +92,22 @@ const Learning = () => {
       </motion.div>
 
       {dueToday.length > 0 && (
-        <motion.div variants={item} className="glass-card rounded-xl p-6 border border-accent/20">
-          <div className="flex items-center gap-2 mb-4">
+        <motion.div variants={item} className="glass-card rounded-2xl p-6 border border-accent/20 card-hover">
+          <div className="flex items-center gap-2 mb-5">
             <RotateCcw className="w-5 h-5 text-accent" />
-            <h2 className="text-lg font-display font-semibold text-foreground">Due for Review</h2>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent font-medium">{dueToday.length}</span>
+            <h2 className="text-xl font-display font-semibold text-foreground">Due for Review</h2>
+            <span className="text-xs px-3 py-1 rounded-full badge-accent">{dueToday.length}</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {dueToday.map(i => (
-              <div key={i.id} className="flex items-center gap-4 p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors">
+              <div key={i.id} className="flex items-center gap-4 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-smooth group">
                 <Brain className="w-5 h-5 text-accent flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">{i.topic}</p>
+                  <p className="text-sm font-semibold text-foreground">{i.topic}</p>
                   <p className="text-xs text-muted-foreground">{i.course}</p>
                 </div>
                 <button onClick={() => handleReview(i.id)}
-                  className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-medium hover:bg-accent/90 transition-colors">
+                  className="px-3 py-2 rounded-lg bg-accent text-accent-foreground text-xs font-semibold hover:bg-accent/90 transition-smooth whitespace-nowrap">
                   Review Now
                 </button>
               </div>
@@ -124,30 +124,30 @@ const Learning = () => {
           </div>
         )}
         {learningItems.map(i => (
-          <div key={i.id} className="glass-card rounded-xl p-5">
+          <div key={i.id} className="glass-card rounded-2xl p-6 card-hover">
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getMasteryBg(i.mastery)}/10`}>
-                <BookOpen className={`w-5 h-5 ${getMasteryColor(i.mastery)}`} />
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getMasteryBg(i.mastery)}/10`}>
+                <BookOpen className={`w-6 h-6 ${getMasteryColor(i.mastery)}`} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-medium text-foreground">{i.topic}</h3>
+                  <h3 className="font-semibold text-foreground">{i.topic}</h3>
                   {i.course && <span className="text-xs text-muted-foreground">· {i.course}</span>}
                 </div>
-                <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Clock className="w-3 h-3" />Last: {formatDistanceToNow(new Date(i.last_reviewed_at), { addSuffix: true })}</span>
                   <span>{i.review_count} reviews</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col items-end gap-1">
-                  <span className={`text-lg font-display font-bold ${getMasteryColor(i.mastery)}`}>{i.mastery}%</span>
-                  <div className="w-24 h-1.5 bg-secondary rounded-full overflow-hidden">
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col items-end gap-2">
+                  <span className={`text-2xl font-display font-bold ${getMasteryColor(i.mastery)}`}>{i.mastery}%</span>
+                  <div className="w-24 h-2 bg-secondary rounded-full overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${i.mastery}%` }} transition={{ duration: 0.8 }}
                       className={`h-full rounded-full ${getMasteryBg(i.mastery)}`} />
                   </div>
                 </div>
-                <button onClick={() => deleteMutation.mutate(i.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                <button onClick={() => deleteMutation.mutate(i.id)} className="text-muted-foreground hover:text-destructive transition-smooth ml-2">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
