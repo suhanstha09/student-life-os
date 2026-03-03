@@ -53,20 +53,20 @@ const Analytics = () => {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
       <motion.div variants={item}>
-        <h1 className="text-3xl font-display font-bold text-foreground">Analytics</h1>
-        <p className="text-muted-foreground mt-1">Your productivity insights and trends.</p>
+        <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">Analytics</h1>
+        <p className="text-muted-foreground mt-2 text-lg">Your productivity insights and trends.</p>
       </motion.div>
 
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(stat => (
-          <div key={stat.label} className="glass-card rounded-xl p-5">
+          <div key={stat.label} className="glass-card rounded-2xl p-6 card-hover">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="text-2xl font-display font-bold text-foreground mt-1">{stat.value}</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{stat.label}</p>
+                <p className="text-3xl font-display font-bold text-foreground mt-3">{stat.value}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <stat.icon className="w-5 h-5 text-primary" />
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <stat.icon className="w-6 h-6 text-primary" />
               </div>
             </div>
           </div>
@@ -74,8 +74,11 @@ const Analytics = () => {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div variants={item} className="lg:col-span-2 glass-card rounded-xl p-6">
-          <h2 className="text-lg font-display font-semibold text-foreground mb-6">Weekly Focus Hours</h2>
+        <motion.div variants={item} className="lg:col-span-2 glass-card rounded-2xl p-6 card-hover">
+          <div>
+            <h2 className="text-xl font-display font-semibold text-foreground mb-2">Weekly Focus Hours</h2>
+            <p className="text-xs text-muted-foreground mb-6">Your focus sessions for the past 7 days</p>
+          </div>
           <div className="flex items-end justify-between gap-3 h-48">
             {weeklyData.map((d, i) => (
               <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
@@ -93,20 +96,23 @@ const Analytics = () => {
           </div>
         </motion.div>
 
-        <motion.div variants={item} className="glass-card rounded-xl p-6">
-          <h2 className="text-lg font-display font-semibold text-foreground mb-5">Top Courses</h2>
+        <motion.div variants={item} className="glass-card rounded-2xl p-6 card-hover">
+          <div>
+            <h2 className="text-xl font-display font-semibold text-foreground mb-2">Top Courses</h2>
+            <p className="text-xs text-muted-foreground mb-5">Assignments breakdown</p>
+          </div>
           {topCourses.length === 0 && <p className="text-sm text-muted-foreground">No courses tracked yet.</p>}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {topCourses.map((c, i) => (
               <div key={c.course}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm font-medium text-foreground">{c.course}</span>
-                  <span className="text-xs text-muted-foreground">{c.count} assignments</span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-foreground">{c.course}</span>
+                  <span className="text-xs badge-primary">{c.count} assignments</span>
                 </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                <div className="h-2.5 bg-secondary rounded-full overflow-hidden">
                   <motion.div initial={{ width: 0 }} animate={{ width: `${c.percentage}%` }}
                     transition={{ delay: i * 0.1, duration: 0.6 }}
-                    className="h-full bg-primary rounded-full" style={{ opacity: 1 - i * 0.15 }} />
+                    className="h-full bg-gradient-to-r from-primary to-accent rounded-full" />
                 </div>
               </div>
             ))}
