@@ -63,12 +63,12 @@ const Notes = () => {
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 relative z-10">
       <motion.div variants={item} className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-foreground">Second Brain</h1>
-          <p className="text-muted-foreground mt-1">{notes.length} notes · {allTags.length} topics</p>
+          <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">Second Brain</h1>
+          <p className="text-muted-foreground mt-2 text-sm">{notes.length} notes · {allTags.length} topics</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg btn-primary">
               <Plus className="w-4 h-4" /> New Note
             </button>
           </DialogTrigger>
@@ -76,26 +76,26 @@ const Notes = () => {
             <DialogHeader><DialogTitle className="font-display">New Note</DialogTitle></DialogHeader>
             <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Title" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                className="input-base" />
               <textarea placeholder="Content" value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[120px]" />
+                className="textarea-base" />
               <input placeholder="Tags (comma-separated)" value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                className="input-base" />
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">Attachments (optional)</label>
+                <label className="block text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Attachments (optional)</label>
                 <input
                   type="file"
                   accept="image/*,application/pdf"
                   multiple
                   onChange={e => setFiles(e.target.files)}
-                  className="block w-full text-sm text-foreground file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-primary-foreground file:font-medium file:cursor-pointer bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="block w-full text-sm text-foreground file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:btn-primary input-base"
                 />
                 {files && files.length > 0 && (
-                  <div className="mt-1 text-xs text-muted-foreground">{Array.from(files).map(f => f.name).join(", ")}</div>
+                  <div className="mt-2 text-xs text-muted-foreground">{Array.from(files).map(f => f.name).join(", ")}</div>
                 )}
               </div>
               <button type="submit" disabled={addMutation.isPending}
-                className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50">
+                className="w-full btn-primary">
                 {addMutation.isPending ? "Creating..." : "Create Note"}
               </button>
             </form>
@@ -103,22 +103,22 @@ const Notes = () => {
         </Dialog>
       </motion.div>
 
-      <motion.div variants={item} className="space-y-3">
+      <motion.div variants={item} className="space-y-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Search your second brain..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            className="input-base pl-10" />
         </div>
         {allTags.length > 0 && (
           <div className="flex gap-2 flex-wrap">
             <button onClick={() => setSelectedTag(null)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${!selectedTag ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-smooth ${!selectedTag ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
               All
             </button>
             {allTags.map(tag => (
               <button key={tag} onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${selectedTag === tag ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
-                <Hash className="w-3 h-3 inline mr-1" />{tag}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-smooth flex items-center gap-1 ${selectedTag === tag ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
+                <Hash className="w-3 h-3" />{tag}
               </button>
             ))}
           </div>
@@ -127,25 +127,26 @@ const Notes = () => {
 
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <p className="text-lg font-display">No notes yet</p>
-            <p className="text-sm mt-1">Click "New Note" to start building your second brain.</p>
+          <div className="col-span-full text-center py-16 text-muted-foreground">
+            <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <p className="text-lg font-display font-semibold">No notes yet</p>
+            <p className="text-sm mt-2">Click "New Note" to start building your second brain.</p>
           </div>
         )}
         <AnimatePresence mode="popLayout">
           {filtered.map(n => (
             <motion.div key={n.id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               onClick={() => setSelectedNote(n)}
-              className={`glass-card rounded-xl p-5 border cursor-pointer hover:border-primary/30 transition-all ${n.color || ''}`}>
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="font-display font-semibold text-foreground">{n.title}</h3>
-                <Brain className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              className={`glass-card rounded-2xl p-6 border cursor-pointer hover:border-primary/40 transition-smooth card-hover ${n.color || ''}`}>
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="font-display font-semibold text-foreground line-clamp-2 text-lg">{n.title}</h3>
+                <Brain className="w-5 h-5 text-primary flex-shrink-0 ml-2" />
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{n.content}</p>
-              <div className="flex items-center justify-between">
-                <div className="flex gap-1.5">
+              <p className="text-sm text-muted-foreground line-clamp-3 mb-4 leading-relaxed">{n.content}</p>
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="flex gap-1.5 flex-wrap">
                   {(n.tags || []).slice(0, 2).map((t: string) => (
-                    <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{t}</span>
+                    <span key={t} className="text-xs px-2.5 py-1 rounded-full badge-primary">{t}</span>
                   ))}
                 </div>
               </div>
