@@ -91,15 +91,15 @@ const Focus = () => {
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 relative z-10">
       {/* ...existing code... */}
       <motion.div variants={item}>
-        <h1 className="text-3xl font-display font-bold text-foreground">Focus Session</h1>
-        <p className="text-muted-foreground mt-1">Deep work, distraction-free.</p>
+        <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">Focus Session</h1>
+        <p className="text-muted-foreground mt-2 text-lg">Deep work, distraction-free.</p>
       </motion.div>
 
       <motion.div variants={item} className="flex flex-col items-center gap-6">
-        <div className="flex rounded-xl bg-secondary border border-border overflow-hidden mb-2">
+        <div className="flex rounded-2xl bg-secondary border border-border overflow-hidden mb-2 shadow-sm">
           {(Object.keys(sessionConfig) as SessionType[]).map(type => (
             <button key={type} onClick={() => switchSession(type)}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${sessionType === type ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              className={`flex-1 px-6 py-3 text-sm font-semibold transition-smooth ${sessionType === type ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
               {type === "focus" && <Target className="w-4 h-4 inline mr-2" />}
               {type !== "focus" && <Coffee className="w-4 h-4 inline mr-2" />}
               {sessionConfig[type].label}
@@ -107,8 +107,8 @@ const Focus = () => {
           ))}
         </div>
         {sessionType === "focus" && (
-          <div className="bg-secondary border border-border rounded-xl p-6 flex flex-col items-center w-[320px] shadow">
-            <label htmlFor="focus-minutes" className="block text-sm font-medium text-foreground mb-2">Focus Minutes</label>
+          <div className="glass-card border-border rounded-2xl p-6 flex flex-col items-center w-[320px] shadow-sm">
+            <label htmlFor="focus-minutes" className="block text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">Focus Minutes</label>
             <div className="flex w-full">
               <input
                 id="focus-minutes"
