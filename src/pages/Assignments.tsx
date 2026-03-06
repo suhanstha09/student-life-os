@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, CheckCircle2, Circle, Clock, AlertTriangle, Calendar, Tag, Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
