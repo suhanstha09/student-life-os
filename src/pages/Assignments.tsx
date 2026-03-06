@@ -16,6 +16,14 @@ const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } 
 const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 const Assignments = () => {
+    // Course color map (example, expand as needed)
+    const courseColors: Record<string, string> = {
+      "CS 201": "bg-blue-500 text-white",
+      "Math": "bg-green-500 text-white",
+      "Physics": "bg-purple-500 text-white",
+      "Chemistry": "bg-pink-500 text-white",
+      // Add more courses/colors as needed
+    };
   const { user } = useAuth();
   const { toast } = useToast();
   const [filter, setFilter] = useState<"all" | "active" | "completed" | "week" | "month" | "overdue">("all");
@@ -167,7 +175,11 @@ const Assignments = () => {
                     </div>
                     {a.description && <p className="text-sm text-muted-foreground mb-3">{a.description}</p>}
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      {a.course && <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{a.course}</span>}
+                      {a.course && (
+                        <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${courseColors[a.course] || "bg-secondary text-foreground"}`}>
+                          <Tag className="w-3.5 h-3.5" />{a.course}
+                        </span>
+                      )}
                       {a.due_date && <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{a.due_date}</span>}
                     </div>
                     {/* Progress slider */}
