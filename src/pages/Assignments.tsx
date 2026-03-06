@@ -27,7 +27,6 @@ const Assignments = () => {
   const addMutation = useAddAssignment();
   const toggleMutation = useToggleAssignment();
   const deleteMutation = useDeleteAssignment();
-
   const handleAdd = async () => {
     try {
       await addMutation.mutateAsync({
