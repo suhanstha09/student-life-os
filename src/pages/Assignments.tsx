@@ -18,7 +18,7 @@ const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 const Assignments = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [filter, setFilter] = useState<"all" | "active" | "completed" | "week" | "month" | "overdue">("all");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", course: "", due_date: "", priority: "medium" as string });
@@ -45,8 +45,37 @@ const Assignments = () => {
     }
   };
 
+  // Date filtering helpers
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
   const filtered = assignments
-    .filter(a => filter === "all" || (filter === "active" ? !a.completed : a.completed))
+    .filter(a => {
+      if (filter === "all") return true;
+      if (filter === "active") return !a.completed;
+      if (filter === "completed") return a.completed;
+      if (filter === "week") {
+        if (!a.due_date) return false;
+        const due = new Date(a.due_date);
+        return due >= startOfWeek && due <= endOfWeek;
+      }
+      if (filter === "month") {
+        if (!a.due_date) return false;
+        const due = new Date(a.due_date);
+        return due >= startOfMonth && due <= endOfMonth;
+      }
+      if (filter === "overdue") {
+        if (!a.due_date) return false;
+        const due = new Date(a.due_date);
+        return !a.completed && due < now;
+      }
+      return true;
+    })
     .filter(a => a.title.toLowerCase().includes(search.toLowerCase()) || a.course.toLowerCase().includes(search.toLowerCase()));
 
   if (isLoading) {
@@ -101,10 +130,10 @@ const Assignments = () => {
             className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
         </div>
         <div className="flex rounded-lg bg-secondary border border-border overflow-hidden">
-          {(["all", "active", "completed"] as const).map(f => (
+          {(["all", "active", "completed", "week", "month", "overdue"] as const).map(f => (
             <button key={f} onClick={() => setFilter(f)}
               className={`px-4 py-2.5 text-sm font-medium capitalize transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
-              {f}
+              {f === "week" ? "This Week" : f === "month" ? "This Month" : f === "overdue" ? "Overdue" : f}
             </button>
           ))}
         </div>
