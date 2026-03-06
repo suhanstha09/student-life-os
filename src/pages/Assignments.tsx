@@ -16,6 +16,13 @@ const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } 
 const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 const Assignments = () => {
+      // Assignment templates
+      const assignmentTemplates = [
+        { title: "Essay", description: "Write an essay on a given topic.", course: "English", priority: "medium" },
+        { title: "Lab Report", description: "Complete the lab report for this week.", course: "Chemistry", priority: "high" },
+        { title: "Homework", description: "Solve assigned problems.", course: "Math", priority: "low" },
+        // Add more templates as needed
+      ];
     // Course color map (example, expand as needed)
     const courseColors: Record<string, string> = {
       "CS 201": "bg-blue-500 text-white",
@@ -105,6 +112,21 @@ const Assignments = () => {
           </DialogTrigger>
           <DialogContent className="glass-card border-border">
             <DialogHeader><DialogTitle className="font-display">New Assignment</DialogTitle></DialogHeader>
+            <div className="mb-2">
+              <label className="block text-sm font-medium mb-1">Use Template:</label>
+              <div className="flex gap-2 flex-wrap">
+                {assignmentTemplates.map((tpl, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="badge-primary"
+                    onClick={() => setForm(f => ({ ...f, ...tpl }))}
+                  >
+                    {tpl.title}
+                  </button>
+                ))}
+              </div>
+            </div>
             <form onSubmit={e => { e.preventDefault(); handleAdd(); }} className="space-y-4">
               <input placeholder="Title" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 className="input-base" />
