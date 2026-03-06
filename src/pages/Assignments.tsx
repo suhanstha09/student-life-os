@@ -18,35 +18,35 @@ const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 const Assignments = () => {
         // ...existing code...
         // assignments and isLoading already declared below
-        // Notification helper
-        const notifyAssignment = (assignment: any, type: "dueSoon" | "overdue") => {
-          if ("Notification" in window && Notification.permission === "granted") {
-            const title = type === "dueSoon" ? `Assignment due soon: ${assignment.title}` : `Assignment overdue: ${assignment.title}`;
-            const body = `Course: ${assignment.course}\nDue: ${assignment.due_date}`;
-            new Notification(title, { body });
-          }
-        };
-        // Request notification permission on mount
-        React.useEffect(() => {
-          if ("Notification" in window && Notification.permission === "default") {
-            Notification.requestPermission();
-          }
-        }, []);
-        // Notify for assignments due soon or overdue
-        React.useEffect(() => {
-          if (!assignments || assignments.length === 0) return;
-          const now = new Date();
-          assignments.forEach(a => {
-            if (!a.due_date || a.completed) return;
-            const due = new Date(a.due_date);
-            const hoursLeft = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
-            if (hoursLeft <= 24 && hoursLeft > 0) {
-              notifyAssignment(a, "dueSoon");
-            } else if (hoursLeft <= 0) {
-              notifyAssignment(a, "overdue");
-            }
-          });
-        }, [assignments]);
+  // Notification helper
+  const notifyAssignment = (assignment: any, type: "dueSoon" | "overdue") => {
+    if ("Notification" in window && Notification.permission === "granted") {
+      const title = type === "dueSoon" ? `Assignment due soon: ${assignment.title}` : `Assignment overdue: ${assignment.title}`;
+      const body = `Course: ${assignment.course}\nDue: ${assignment.due_date}`;
+      new Notification(title, { body });
+    }
+  };
+  // Request notification permission on mount
+  React.useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+  // Notify for assignments due soon or overdue
+  React.useEffect(() => {
+    if (!assignments || assignments.length === 0) return;
+    const now = new Date();
+    assignments.forEach(a => {
+      if (!a.due_date || a.completed) return;
+      const due = new Date(a.due_date);
+      const hoursLeft = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
+      if (hoursLeft <= 24 && hoursLeft > 0) {
+        notifyAssignment(a, "dueSoon");
+      } else if (hoursLeft <= 0) {
+        notifyAssignment(a, "overdue");
+      }
+    });
+  }, []);
       // Assignment templates
       const assignmentTemplates = [
         { title: "Essay", description: "Write an essay on a given topic.", course: "English", priority: "medium" },
