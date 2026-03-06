@@ -149,6 +149,10 @@ const Assignments = () => {
         <AnimatePresence mode="popLayout">
           {filtered.map((a) => {
             const pConfig = priorityConfig[a.priority as keyof typeof priorityConfig] || priorityConfig.medium;
+            // Progress update handler
+            const handleProgressChange = (progress: number) => {
+              toggleMutation.mutate({ id: a.id, completed: a.completed, progress });
+            };
             return (
               <motion.div key={a.id} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
                 className={`glass-card rounded-xl p-5 transition-all ${a.completed ? "opacity-60" : ""}`}>
@@ -166,15 +170,21 @@ const Assignments = () => {
                       {a.course && <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{a.course}</span>}
                       {a.due_date && <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{a.due_date}</span>}
                     </div>
+                    {/* Progress slider */}
+                    <div className="mt-3 flex items-center gap-2">
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={a.progress}
+                        onChange={e => handleProgressChange(Number(e.target.value))}
+                        className="w-32 h-2 accent-primary"
+                        disabled={toggleMutation.isPending}
+                      />
+                      <span className="text-xs text-foreground font-semibold">{a.progress}%</span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="text-sm font-semibold text-foreground">{a.progress}%</span>
-                      <div className="w-24 h-1.5 bg-secondary rounded-full overflow-hidden">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${a.progress}%` }} transition={{ duration: 0.8, ease: "easeOut" }}
-                          className="h-full bg-primary rounded-full" />
-                      </div>
-                    </div>
                     <button onClick={() => deleteMutation.mutate(a.id)} className="text-muted-foreground hover:text-destructive transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
