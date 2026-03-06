@@ -46,7 +46,7 @@ const Assignments = () => {
         notifyAssignment(a, "overdue");
       }
     });
-  }, [assignments]);
+  }, [Assignments]);
       // Assignment templates
       const assignmentTemplates = [
         { title: "Essay", description: "Write an essay on a given topic.", course: "English", priority: "medium" },
