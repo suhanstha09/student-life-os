@@ -17,7 +17,7 @@ const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 const Assignments = () => {
         // ...existing code...
-        const { data: assignments = [], isLoading } = useAssignments();
+        // assignments and isLoading already declared below
         // Notification helper
         const notifyAssignment = (assignment: any, type: "dueSoon" | "overdue") => {
           if ("Notification" in window && Notification.permission === "granted") {
