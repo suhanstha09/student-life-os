@@ -16,6 +16,8 @@ const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } 
 const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 const Assignments = () => {
+        // ...existing code...
+        const { data: assignments = [], isLoading } = useAssignments();
         // Notification helper
         const notifyAssignment = (assignment: any, type: "dueSoon" | "overdue") => {
           if ("Notification" in window && Notification.permission === "granted") {
@@ -24,14 +26,12 @@ const Assignments = () => {
             new Notification(title, { body });
           }
         };
-
         // Request notification permission on mount
         React.useEffect(() => {
           if ("Notification" in window && Notification.permission === "default") {
             Notification.requestPermission();
           }
         }, []);
-
         // Notify for assignments due soon or overdue
         React.useEffect(() => {
           if (!assignments || assignments.length === 0) return;
